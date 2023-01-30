@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 import uvicorn
 
-app = FastAPI()
+app = FastAPI(
+    title="API для работы с расписанием"
+)
 
 
 @app.get("/")
