@@ -1,9 +1,27 @@
 from fastapi import FastAPI
-import uvicorn
+
+from auth.base_config import auth_backend, fastapi_users
+from auth.schemas import UserRead, UserCreate
+
+from operations.router import router as router_operation
 
 app = FastAPI(
     title="API для работы с расписанием"
 )
+
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth",
+    tags=["Auth"],
+)
+
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["Auth"],
+)
+
+app.include_router(router_operation)
 
 
 @app.get("/")
@@ -12,4 +30,5 @@ async def root():
 
 
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)
